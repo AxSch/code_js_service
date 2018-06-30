@@ -36,6 +36,10 @@ class DatabaseClient {
         2000);
     });
   }
+  load() {
+    log.info('Database: load');
+    return data;
+  }
 }
 
 export default new DatabaseClient();
