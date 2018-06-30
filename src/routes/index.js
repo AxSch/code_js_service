@@ -22,7 +22,18 @@ export default (app) => {
       });
       portArr.push(newObj);
     });
-
     res.json({ portfolios: portArr });
   })
+
+  app.get('/api/portfolios/:curr', (req, res) => {
+    const data = db.load();
+    log.info('/ called');
+    const portArr = [];
+    const port = data.positions.filter(item => {
+      if(item.currency === req.params.curr) {
+        portArr.push(item);
+      }
+    });
+    res.json({ portfolio: portArr });
+  });
 };
