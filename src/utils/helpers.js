@@ -15,4 +15,18 @@ const structurePortf = (portfs, pos) => {
   return portArr;
 }
 
-export default structurePortf;
+const filterOnCurrency = (pos, req)=> {
+  let posArr = [];
+  const portfs = pos.filter(item => {
+    if (item.currency === req) {
+      posArr.push(item);
+    }
+  });
+  return posArr;
+}
+
+
+export {
+  structurePortf,
+  filterOnCurrency,
+};
