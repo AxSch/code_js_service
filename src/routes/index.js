@@ -1,7 +1,12 @@
 import log from "../logger";
 import db from "../database/index";
 import moment from 'moment';
-import { structurePortf, filterOnCurrency } from '../utils/helpers';
+import { 
+  structurePortf,
+  filterOnCurrency,
+  createPortAndPos,
+  addPortAndPos,
+ } from '../utils/helpers';
 
 
 export default (app) => {
@@ -32,38 +37,10 @@ export default (app) => {
 
   app.post('/api/portfolios', (req, res) => {
     let data = db.load();
-    let count = 0;
-    let portCount = 0;
-    log.info('/ called');
-    
-    const posData = data.positions.map(item => {
-      if (item.id > count) {
-        count = item.id;
-      }
-    });
-
-    const portData = data.portfolios.map(item => {
-      if (item.id > portCount) {
-        portCount = item.id;
-      }
-    });
-    
-    const newPortfolio = {
-      id: portCount + 1,
-      name: req.body.name,
-    };
-
-    const newPosition = {
-      id: count + 1,
-      portfolioId: portCount + 1,
-      currency: req.body.currency,
-      value: req.body.value,
-      date: moment().format('YYYY-MM-DD'),
-    };
-    
-    data.portfolios.push(newPortfolio);
-    data.positions.push(newPosition);
-    res.json({ portfolio: newPortfolio, positions: newPosition });
+    log.info('/ called ADD PORTFOLIO');
+    const newPortfolio = createPortAndPos(data.portfolios, data.positions, req);
+    addPortAndPos(data.portfolios, data.positions, newPortfolio);
+    res.json({ portfolio: newPortfolio[0], positions: newPortfolio[1] });
   });
 
   app.put('/api/portfolios/:id', (req, res) => {
