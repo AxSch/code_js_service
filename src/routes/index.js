@@ -1,4 +1,5 @@
 import log from "../logger";
+import _ from 'lodash';
 import db from "../database/index";
 import moment from 'moment';
 import { 
@@ -6,6 +7,7 @@ import {
   filterOnCurrency,
   createPortAndPos,
   addPortAndPos,
+  updatePort,
  } from '../utils/helpers';
 
 
@@ -31,8 +33,7 @@ export default (app) => {
       res.json({ portfolios: result });
     } else {
       res.status(404).send("The currency you've entered, either doesn't exist or has been mistyped. \nPlease Try again.");
-    }
-    
+    } 
   });
 
   app.post('/api/portfolios', (req, res) => {
@@ -45,15 +46,10 @@ export default (app) => {
 
   app.put('/api/portfolios/:id', (req, res) => {
     let data = db.load();
-    log.info('/ called');
-    const test = data.portfolios.filter(item => {
-      if(item.id === Number(req.params.id)) {
-        item.name = req.body.name;
-        data.portfolios.splice(data.portfolios.indexOf(item), 1, item)
-        return item;
-      }
-    });
-    res.json({ portfolio: test });
+    log.info('/ called UPDATE PORTFOLIO');
+    const updateCred = updatePort(data.portfolios, req);
+    data.portfolios.splice(data.portfolios.indexOf(updateCred[0]), 1, updateCred[1]);
+    res.json({ portfolio: updateCred });
   });
 
   app.delete('/api/portfolios/:id', (req, res) => {
