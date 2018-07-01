@@ -90,5 +90,20 @@ export default (app) => {
     });
     res.json({ portfolio: test });
   });
+
+  app.delete('/api/portfolios/:id', (req, res) => {
+    const data = db.load();
+    log.info('/ called');
+    const test = data.portfolios.filter(item => {
+      if(item.id === Number(req.params.id)) {
+        const deletedItem = item;
+        // console.log(data.portfolios);
+        data.portfolios.splice(data.portfolios.indexOf(item), 1)
+        // console.log(data.portfolios);
+        return deletedItem;
+      }
+    });
+    res.json({ portfolio: test });
+  });
 };
 
