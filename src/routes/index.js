@@ -8,6 +8,7 @@ import {
   createPortAndPos,
   addPortAndPos,
   updatePort,
+  deletePort,
  } from '../utils/helpers';
 
 
@@ -54,15 +55,11 @@ export default (app) => {
 
   app.delete('/api/portfolios/:id', (req, res) => {
     let data = db.load();
-    log.info('/ called');
-    const test = data.portfolios.filter(item => {
-      if(item.id === Number(req.params.id)) {
-        return item;
-      }
-    });
-    res.json({ portfolio: test });
+    log.info('/ called DELETE PORTFOLIO');
+    const deleteCred = deletePort(data.portfolios, req);
+    res.json({ portfolio: deleteCred });
     data.portfolios.map(item => {
-      if (item === test[0]) {
+      if (item === deleteCred[0]) {
         data.portfolios.splice(data.portfolios.indexOf(item), 1);
       }
     });
