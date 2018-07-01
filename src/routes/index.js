@@ -37,8 +37,9 @@ export default (app) => {
     });
     if (portArr.length > 0) {
       res.json({ portfolio: portArr });
+    } else {
+      res.json({ message: "No currency found." });
     }
-    res.json({ message: "No currency found." });
     
   });
 
@@ -78,21 +79,16 @@ export default (app) => {
     res.json({ portfolio: newPortfolio, position: newPosition });
   });
 
-  // app.put('/api/portfolios/:id', (req, res) => {
-  //   const data = db.load();
-  //   log.info('/ called');
-
-  //   dat
-  //   const newPortfolio = {
-  //     portfolioId: req.body.portfolioId,
-  //     currency: req.body.currency,
-  //     value: req.body.value,
-  //     date: moment().format('YYYY-MM-DD'),
-  //   };
-    
-  //   data.portfolios.push(newPortfolio);
-  //   data.positions.push(newPosition);
-  //   res.json({ portfolio: newPortfolio, position: newPosition });
-  // });
+  app.put('/api/portfolios/:id', (req, res) => {
+    const data = db.load();
+    log.info('/ called');
+    const test = data.portfolios.filter(item => {
+      if(item.id === Number(req.params.id)) {
+        item.name = req.body.name;
+        return item;
+      }
+    });
+    res.json({ portfolio: test });
+  });
 };
 
