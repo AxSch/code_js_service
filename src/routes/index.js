@@ -1,7 +1,7 @@
 import log from "../logger";
 import db from "../database/index";
-import _ from 'lodash';
 import moment from 'moment';
+import structurePortf from '../utils/helpers';
 
 
 export default (app) => {
@@ -12,18 +12,9 @@ export default (app) => {
 
   app.get('/api/portfolios', (req, res) => {
     const data = db.load();
-    const portArr = [];
-    const port = data.portfolios.map(item => {
-      const newObj =  _.cloneDeep(item);
-      newObj.positions = [];
-      data.positions.filter(item2 => {
-        if (item.id === item2.portfolioId) {
-          newObj.positions.push(item2);
-        }
-      });
-      portArr.push(newObj);
-    });
-    res.json({ portfolios: portArr });
+    log.info('/ called ALL PORTFOLIOS');
+    const portfolioArr = structurePortf(data.portfolios, data.positions);
+    res.json({ portfolios: portfolioArr });
   })
 
   app.get('/api/portfolios/:curr', (req, res) => {
