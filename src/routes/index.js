@@ -85,7 +85,7 @@ export default (app) => {
     const test = data.portfolios.filter(item => {
       if(item.id === Number(req.params.id)) {
         item.name = req.body.name;
-        data = data.portfolios.splice(data.portfolios.indexOf(item), 1, item)
+        data.portfolios.splice(data.portfolios.indexOf(item), 1, item)
         return item;
       }
     });
@@ -97,14 +97,15 @@ export default (app) => {
     log.info('/ called');
     const test = data.portfolios.filter(item => {
       if(item.id === Number(req.params.id)) {
-        // const deletedItem = item;
-        // console.log(data.portfolios);
-        data.portfolios.splice(data.portfolios.indexOf(item), 1)
-        // console.log(data.portfolios);
-        // return deletedItem;
+        return item;
       }
     });
     res.json({ portfolio: test });
+    data.portfolios.map(item => {
+      if (item === test[0]) {
+        data.portfolios.splice(data.portfolios.indexOf(item), 1);
+      }
+    });
   });
 };
 
