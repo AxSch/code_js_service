@@ -44,7 +44,7 @@ export default (app) => {
   });
 
   app.post('/api/portfolios', (req, res) => {
-    const data = db.load();
+    let data = db.load();
     let count = 0;
     let portCount = 0;
     log.info('/ called');
@@ -68,7 +68,7 @@ export default (app) => {
 
     const newPosition = {
       id: count + 1,
-      portfolioId: req.body.portfolioId,
+      portfolioId: portCount + 1,
       currency: req.body.currency,
       value: req.body.value,
       date: moment().format('YYYY-MM-DD'),
@@ -76,15 +76,16 @@ export default (app) => {
     
     data.portfolios.push(newPortfolio);
     data.positions.push(newPosition);
-    res.json({ portfolio: newPortfolio, position: newPosition });
+    res.json({ portfolio: newPortfolio, positions: newPosition });
   });
 
   app.put('/api/portfolios/:id', (req, res) => {
-    const data = db.load();
+    let data = db.load();
     log.info('/ called');
     const test = data.portfolios.filter(item => {
       if(item.id === Number(req.params.id)) {
         item.name = req.body.name;
+        data = data.portfolios.splice(data.portfolios.indexOf(item), 1, item)
         return item;
       }
     });
@@ -92,15 +93,15 @@ export default (app) => {
   });
 
   app.delete('/api/portfolios/:id', (req, res) => {
-    const data = db.load();
+    let data = db.load();
     log.info('/ called');
     const test = data.portfolios.filter(item => {
       if(item.id === Number(req.params.id)) {
-        const deletedItem = item;
+        // const deletedItem = item;
         // console.log(data.portfolios);
         data.portfolios.splice(data.portfolios.indexOf(item), 1)
         // console.log(data.portfolios);
-        return deletedItem;
+        // return deletedItem;
       }
     });
     res.json({ portfolio: test });
