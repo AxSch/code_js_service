@@ -1,6 +1,7 @@
 import log from "../logger";
 import db from "../database/index";
 import _ from 'lodash';
+import moment from 'moment';
 
 
 export default (app) => {
@@ -43,9 +44,10 @@ export default (app) => {
 
   app.post('/api/portfolios', (req, res) => {
     const data = db.load();
-    log.info('/ called');
     let count = 0;
     let portCount = 0;
+    log.info('/ called');
+    
     const posData = data.positions.map(item => {
       if (item.id > count) {
         count = item.id;
@@ -61,7 +63,6 @@ export default (app) => {
     const newPortfolio = {
       id: portCount + 1,
       name: req.body.name,
-      positions: [],
     };
 
     const newPosition = {
@@ -69,32 +70,29 @@ export default (app) => {
       portfolioId: req.body.portfolioId,
       currency: req.body.currency,
       value: req.body.value,
-      date: new Date(),
+      date: moment().format('YYYY-MM-DD'),
     };
-    newPortfolio.positions.push(newPosition);
+    
     data.portfolios.push(newPortfolio);
     data.positions.push(newPosition);
-    res.json({ portfolio: newPortfolio });
+    res.json({ portfolio: newPortfolio, position: newPosition });
   });
 
-  app.post('/api/portfolios', (req, res) => {
-    const data = db.load();
-    log.info('/ called');
-    let count = 0;
-    const portData = data.portfolios.map(item => {
-      if (item.id > count) {
-        count = item.id;
-      }
-    });
+  // app.put('/api/portfolios/:id', (req, res) => {
+  //   const data = db.load();
+  //   log.info('/ called');
+
+  //   dat
+  //   const newPortfolio = {
+  //     portfolioId: req.body.portfolioId,
+  //     currency: req.body.currency,
+  //     value: req.body.value,
+  //     date: moment().format('YYYY-MM-DD'),
+  //   };
     
-    const newPortfolio = {
-      id: count + 1,
-      name: req.body.name,
-      positions: [],
-    };
-
-    data.portfolios.push(newPortfolio);
-    res.json({ portfolio: newPortfolio });
-  });
+  //   data.portfolios.push(newPortfolio);
+  //   data.positions.push(newPosition);
+  //   res.json({ portfolio: newPortfolio, position: newPosition });
+  // });
 };
 

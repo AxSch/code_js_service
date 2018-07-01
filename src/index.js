@@ -3,9 +3,13 @@ import http from 'http';
 import config from './config';
 import log from './logger';
 import routes from './routes';
-import DatabaseClient from "./database/index";
+import DatabaseClient from './database/index';
+import bodyParser from 'body-parser';
 
 const app = express();
+
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
 
 routes(app);
 
