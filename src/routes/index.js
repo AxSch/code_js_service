@@ -1,7 +1,7 @@
 import log from "../logger";
 import db from "../database/index";
 import moment from 'moment';
-import structurePortf from '../utils/helpers';
+import { structurePortf, filterOnCurrency } from '../utils/helpers';
 
 
 export default (app) => {
@@ -19,17 +19,13 @@ export default (app) => {
 
   app.get('/api/portfolios/:curr', (req, res) => {
     const data = db.load();
-    log.info('/ called');
-    const portArr = [];
-    const port = data.positions.filter(item => {
-      if(item.currency === req.params.curr) {
-        portArr.push(item);
-      }
-    });
-    if (portArr.length > 0) {
-      res.json({ portfolio: portArr });
+    log.info('/ called FILTER CURRENCY');
+    const positionsArr = filterOnCurrency(data.positions, req.params.curr);
+    const result = structurePortf(data.portfolios, positionsArr);
+    if (positionsArr.length > 0) {
+      res.json({ portfolios: result });
     } else {
-      res.json({ message: "No currency found." });
+      res.status(404).send("The currency you've entered, either doesn't exist or has been mistyped. \nPlease Try again.");
     }
     
   });
