@@ -65,9 +65,24 @@ const addPortAndPos = (portArr, posArr, newPortfolio) => {
   posArr.push(newPortfolio[1]);
 }
 
+const updatePort = (portArr, req) => {
+  let clone = null;
+  let updateArr = [];
+  const entryToUpdate = portArr.filter(item=> {
+    if(item.id === Number(req.params.id)){
+      clone = _.cloneDeep(item);
+      clone.name = req.body.name;
+      updateArr.push(item, clone);
+    }
+  });
+
+  return updateArr;
+}
+
 export {
   structurePortf,
   filterOnCurrency,
   createPortAndPos,
   addPortAndPos,
+  updatePort,
 };
