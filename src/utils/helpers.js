@@ -79,10 +79,20 @@ const updatePort = (portArr, req) => {
   return updateArr;
 }
 
+const deletePort = (portArr, req) => {
+  const itemForDelete = portArr.filter(item => {
+    if(item.id === Number(req.params.id)){
+      return item;
+    }
+  });
+  return itemForDelete;
+}
+
 export {
   structurePortf,
   filterOnCurrency,
   createPortAndPos,
   addPortAndPos,
   updatePort,
+  deletePort,
 };
